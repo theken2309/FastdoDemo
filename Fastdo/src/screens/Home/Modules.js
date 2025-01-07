@@ -1,70 +1,144 @@
-import React from "react";
-import { View, Text, Button, StyleSheet, Image, TouchableOpacity } from "react-native";
 
-const ModulesScreen = ({ navigation }) => {
+import React, { useState, useEffect } from 'react';
+import { View, Text, Image, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
+import iconTodolist from '../../../assets/image/icon/todolist.png';
+import iconCheckin from '../../../assets/image/icon/checkin.png';
+import '../../../global.css'
+const list = [
+  { id: 1, source: 'https://storage.googleapis.com/fastdo-storage.appspot.com/237O695B8A/638718395634090331_thong-bao.png' },
+  { id: 2, source: 'https://storage.googleapis.com/fastdo-storage.appspot.com/237O695B8A/638718395634090331_thong-bao.png' },
+  { id: 3, source: 'https://storage.googleapis.com/fastdo-storage.appspot.com/237O695B8A/638718395634090331_thong-bao.png' },
+  { id: 4, source: 'https://storage.googleapis.com/fastdo-storage.appspot.com/237O695B8A/638718395634090331_thong-bao.png' },
+  { id: 5, source: 'https://storage.googleapis.com/fastdo-storage.appspot.com/237O695B8A/638718395634090331_thong-bao.png' },
+];
+
+const listModule = [
+  { id: 'todolist', source: iconTodolist, title: 'Todolist' },
+  { id: 'checkin', source: iconCheckin, title: 'Chấm công' },
+];
+
+
+export default function ModulesScreen({ navigation }) {
+  const [banner, setBanner] = useState([]);
+  const [module, setModule] = useState([]);
+  const [myModule, setMyModule] = useState([]);
+
+  useEffect(() => {
+    setBanner([...list]);
+    setModule([...listModule]);
+  }, []);
+
   return (
     <View style={styles.container}>
 
-      <View style={styles.header}>
-          <Image
-            source={{ uri: 'https://storage.googleapis.com/fastdo-storage.appspot.com/avatar/638537992176512338_nguyen-thanh-ken.png' }}
-            style={styles.image}
-          />
-          <View style ={{flexDirection:'column' , marginLeft:12 }} > 
-          <Text>Nguyen Thanh Ken ,</Text>
+      <View className="flex bg-yellow-300 align-middle flex-row p-4" >
+        <Image
+          source={{ uri: 'https://storage.googleapis.com/fastdo-storage.appspot.com/avatar/638537992176512338_nguyen-thanh-ken.png' }}
+          style={styles.image}
+        />
+        <View className="flex flex-col ml-4 justify-center">
+          <Text>Nguyen Thanh Ken,</Text>
           <Text>Chào mừng tới với Fastdo</Text>
-          </View>
+        </View>
       </View>
 
       <View style={styles.newsfeed}>
-        <Text>Tin tức</Text>
+        <Text style={{ marginBottom: 8 }}>Tin tức</Text>
+        <FlatList
+          horizontal
+          data={banner}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item }) => (
+            <TouchableOpacity  >
+              <Image
+                className="w-52 h-40 mx-1 flex"
+                source={{ uri: item.source }}
+              />
+            </TouchableOpacity>
+          )}
+        />
       </View>
 
-      <View style={styles.modules}>
-        <Text>Modules</Text>
+      <View className="flex flex-col gap-4 p-4">
+        <View className="flex flex-col gap-4">
+          <View className="flex flex-row  justify-between " >
+            <Text>Yêu thích</Text>
+            <TouchableOpacity
+
+              onPress={() => {
+                /* 1. Navigate to the Details route with params */
+                navigation.navigate('ChooseApp', {
+                  modules: module,
+                  myModules: myModule,
+                });
+              }}
+            >
+              <Text className='text-blue-500' >Thêm ứng dụng</Text>
+            </TouchableOpacity>
+          </View>
+          <View className="flex flex-row" >
+            <FlatList
+              horizontal
+              data={myModule}
+              keyExtractor={(item) => item.id.toString()}
+              renderItem={({ item }) => (
+                <TouchableOpacity className="mx-4" onPress={() => console.log(item.source)} >
+                  <Image style={styles.iconModules} source={item.source} />
+                  <Text >{item.title}</Text>
+                </TouchableOpacity>
+              )}
+            />
+          </View>
+
+          <Text> Danh sách ứng dụng </Text>
+
+          <FlatList
+            horizontal
+            data={module}
+            keyExtractor={(item) => item.id.toString()}
+            renderItem={({ item }) => (
+              <TouchableOpacity className="mx-4 text-center justify-center align-middle " onPress={() => console.log(item.source)} >
+                <View className="flex flex-row justify-center align-middle" >
+                  <Image style={styles.iconModules} source={item.source} />
+                </View>
+                <Text >{item.title}</Text>
+              </TouchableOpacity>
+            )}
+          />
+        </View>
       </View>
+
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
-
   container: {
-      flex: 1,
-      backgroundColor: 'yellow',
+    flex: 1,
+    backgroundColor: '#fff',
   },
-  
-  header: {
 
-      margin: 24,
-      flexDirection:'row',
-      backgroundColor: 'yellow',
-      justifyContent: 'flex-start',
-      alignItems: 'center',
-  },
-  newsfeed :{
-      flex: 3,
-      margin: 24,
-      flexDirection:'column',
-      backgroundColor: 'gray',
-      justifyContent: 'flex-start',
-      alignItems: 'flex-start',
-  },
-  modules:{
-      flex: 8,
-      backgroundColor: 'white',
-      justifyContent: 'center',
-      alignItems: 'center',
-  },
   image: {
-    borderRadius: 24,
-    width: 48,
-    height: 48,
-    resizeMode: 'cover',
-    backgroundColor: 'white',
+    width: 50,
+    height: 50,
+    borderRadius: 25,
   },
-
-  
-  });
-
-export default ModulesScreen;
+  newsfeed: {
+    padding: 16,
+  },
+  itemfeed: {
+    width: 240,
+    height: 180,
+  },
+  imageFull: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
+  },
+  modules: {
+  },
+  iconModules: {
+    height: 48,
+    width: 48,
+  }
+});
