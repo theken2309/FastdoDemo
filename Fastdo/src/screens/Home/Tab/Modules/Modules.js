@@ -1,9 +1,9 @@
 
 import React, { useState, useEffect } from 'react';
 import { View, Text, Image, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
-import iconTodolist from '../../../assets/image/icon/todolist.png';
-import iconCheckin from '../../../assets/image/icon/checkin.png';
-import '../../../global.css'
+import iconTodolist from '../../../../../assets/image/icon/todolist.png';
+import iconCheckin from '../../../../../assets/image/icon/checkin.png';
+import '../../../../../global.css'
 const list = [
   { id: 1, source: 'https://storage.googleapis.com/fastdo-storage.appspot.com/237O695B8A/638718395634090331_thong-bao.png' },
   { id: 2, source: 'https://storage.googleapis.com/fastdo-storage.appspot.com/237O695B8A/638718395634090331_thong-bao.png' },
@@ -13,8 +13,8 @@ const list = [
 ];
 
 const listModule = [
-  { id: 'todolist', source: iconTodolist, title: 'Todolist' },
-  { id: 'checkin', source: iconCheckin, title: 'Chấm công' },
+  { id: 'Todolist', source: iconTodolist, title: 'Todolist' },
+  { id: 'Checkin', source: iconCheckin, title: 'Chấm công' },
 ];
 
 
@@ -28,15 +28,29 @@ export default function ModulesScreen({ navigation }) {
     setModule([...listModule]);
   }, []);
 
-  return (
-    <View style={styles.container}>
+  const handleGotoModule = (module) => {
+    console.log(module)
+    navigation.navigate(module);
+  }
 
-      <View className="flex bg-yellow-300 align-middle flex-row p-4" >
+  const handleGotoChooseApp = () => {
+    navigation.navigate('ChooseApp', {
+      modules: module,
+      myModules: myModule,
+      onGoBack: (data) => {
+        setMyModule(data);
+      }
+    });
+  }
+
+  return (
+    <View className="flex flex-1 " >
+      <View className="flex h-28 gap-4 items-center bg-yellow-300 align-middle flex-row p-4" >
         <Image
           source={{ uri: 'https://storage.googleapis.com/fastdo-storage.appspot.com/avatar/638537992176512338_nguyen-thanh-ken.png' }}
           style={styles.image}
         />
-        <View className="flex flex-col ml-4 justify-center">
+        <View >
           <Text>Nguyen Thanh Ken,</Text>
           <Text>Chào mừng tới với Fastdo</Text>
         </View>
@@ -66,12 +80,9 @@ export default function ModulesScreen({ navigation }) {
             <TouchableOpacity
 
               onPress={() => {
-                /* 1. Navigate to the Details route with params */
-                navigation.navigate('ChooseApp', {
-                  modules: module,
-                  myModules: myModule,
-                });
+                handleGotoChooseApp()
               }}
+
             >
               <Text className='text-blue-500' >Thêm ứng dụng</Text>
             </TouchableOpacity>
@@ -82,8 +93,10 @@ export default function ModulesScreen({ navigation }) {
               data={myModule}
               keyExtractor={(item) => item.id.toString()}
               renderItem={({ item }) => (
-                <TouchableOpacity className="mx-4" onPress={() => console.log(item.source)} >
-                  <Image style={styles.iconModules} source={item.source} />
+                <TouchableOpacity className="mx-4 text-center justify-center align-middle " onPress={() => handleGotoModule(item.id)} >
+                  <View className="flex flex-row justify-center align-middle" >
+                    <Image style={styles.iconModules} source={item.source} />
+                  </View>
                   <Text >{item.title}</Text>
                 </TouchableOpacity>
               )}
@@ -97,7 +110,7 @@ export default function ModulesScreen({ navigation }) {
             data={module}
             keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => (
-              <TouchableOpacity className="mx-4 text-center justify-center align-middle " onPress={() => console.log(item.source)} >
+              <TouchableOpacity className="mx-4 text-center justify-center align-middle " onPress={() => handleGotoModule(item.id)} >
                 <View className="flex flex-row justify-center align-middle" >
                   <Image style={styles.iconModules} source={item.source} />
                 </View>
