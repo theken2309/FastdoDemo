@@ -14,12 +14,17 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.example.fastdo",
+      "entitlements": {
+        "keychain-access-groups": ["YOUR_TEAM_ID.com.example.fastdo"]
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/image/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#ffffff",
+        "package": "com.example.fastdo"
       }
     },
     "web": {

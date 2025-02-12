@@ -1,12 +1,20 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { View, Text, Button, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import AsyncStorage from '@react-native-async-storage/async-storage'; // Import AsyncStorage
+import { useDispatch } from 'react-redux'; // Import useDispatch
+
 
 const MyProfileScreen = ({ navigation }) => {
+    const logout = async () => {
+        await AsyncStorage.removeItem('authToken');
+        // dispatch(logout());
+        navigation.navigate("Login")
+    };
+
     return (
         <View className="flex flex-1">
             <View className="flex h-1/5 bg-slate-300  flex-row justify-start  items-end gap-4" >
-
                 <Image
                     source={{ uri: 'https://storage.googleapis.com/fastdo-storage.appspot.com/avatar/638537992176512338_nguyen-thanh-ken.png' }}
                     className="flex flex-col justify-center h-24 w-24 rounded-full ml-4 items-end bg-red-500 " >
@@ -85,6 +93,10 @@ const MyProfileScreen = ({ navigation }) => {
 
             </View>
 
+            <TouchableOpacity className="bg-red-500 m-2 items-center p-2 rounded-lg " onPress={logout} >
+                <Text className="text-white"  > Đăng xuất </Text>
+            </TouchableOpacity>
+
         </View >
     );
 };
@@ -100,6 +112,7 @@ const styles = StyleSheet.create({
         fontSize: 24,
         fontWeight: 'bold',
     },
+
 });
 
 export default MyProfileScreen;

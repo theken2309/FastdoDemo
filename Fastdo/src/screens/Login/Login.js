@@ -4,25 +4,32 @@ import { SafeAreaView, SafeAreaProvider, AreaProvider } from "react-native-safe-
 import "../../../global.css";
 import { PostLogin } from "../../services/AuthenticationService";
 import { useNavigation } from "@react-navigation/native";
+import { useDispatch } from 'react-redux'; // Import useDispatch
+import { loginSuccess } from '../../redux/authSlice'; // Thêm dòng này
+import AsyncStorage from '@react-native-async-storage/async-storage'; // Import AsyncStorage
 export default function Login() {
+
+  const dispatch = useDispatch();
   const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
   const navigate = useNavigation();
   const headers = {
-    "Content-Type": "application/json",
     "x-api-key": "243PA307D3",
-    "authorization":
-      "",
-    "x-company-id": "",
-    "x-client-id": "24AGCAA43F0D8F7",
   };
   const HandleLogin = async () => {
-    var result = await PostLogin({ email: username, password: password }, headers);
-    if (result == null) {
-      alert("Đăng nhập thất bại");
-    } else {
-      console.log(result);
-      navigate.navigate("Home");
+    try {
+      var result = await PostLogin({ email: username, password: password }, headers);
+      if (result == null) {
+        alert("Đăng nhập thất bại");
+      } else {
+        console.log(result);
+        dispatch(loginSuccess(result.metadata));
+        await AsyncStorage.setItem('authToken', result.metadata.tokens.accessToken); // Lưu accessToken vào AsyncStorage
+        await AsyncStorage.setItem('userId', result.metadata.user.userId); // Lưu accessToken vào AsyncStorage
+        navigate.navigate("Home")
+      }
+    } catch (error) {
+      console.error(error);
     }
   };
 

@@ -4,6 +4,8 @@ import { View, Text, Image, FlatList, TouchableOpacity, StyleSheet } from 'react
 import iconTodolist from '../../../../../assets/image/icon/todolist.png';
 import iconCheckin from '../../../../../assets/image/icon/checkin.png';
 import '../../../../../global.css'
+import { useSelector } from 'react-redux';
+import { GetUserById } from '../../../../services/Home/HomeService';
 const list = [
   { id: 1, source: 'https://storage.googleapis.com/fastdo-storage.appspot.com/237O695B8A/638718395634090331_thong-bao.png' },
   { id: 2, source: 'https://storage.googleapis.com/fastdo-storage.appspot.com/237O695B8A/638718395634090331_thong-bao.png' },
@@ -19,17 +21,30 @@ const listModule = [
 
 
 export default function ModulesScreen({ navigation }) {
+  const userId = useSelector((state) => state.auth.userId);
+  const [user, setUser] = useState();
   const [banner, setBanner] = useState([]);
   const [module, setModule] = useState([]);
   const [myModule, setMyModule] = useState([]);
 
   useEffect(() => {
-    setBanner([...list]);
-    setModule([...listModule]);
-  }, []);
+    const fetchData = async () => {
+      try {
+        const userData = await GetUserById(userId);
+        setUser(userData);
+        setBanner([...list]);
+        setModule([...listModule]);
+        console.log('userData', userData);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
 
-  const handleGotoModule = (module) => {
-    console.log(module)
+      }
+    };
+
+    fetchData();
+  }, [userId]); // Thêm userId vào dependency array nếu nó có thể thay đổi
+
+  const handleGotoModule = async (module) => {
     navigation.navigate(module);
   }
 
@@ -47,11 +62,11 @@ export default function ModulesScreen({ navigation }) {
     <View className="flex flex-1 " >
       <View className="flex h-28 gap-4 items-center bg-yellow-300 align-middle flex-row p-4" >
         <Image
-          source={{ uri: 'https://storage.googleapis.com/fastdo-storage.appspot.com/avatar/638537992176512338_nguyen-thanh-ken.png' }}
+          source={{ uri: user?.avatar }}
           style={styles.image}
         />
         <View >
-          <Text>Nguyen Thanh Ken,</Text>
+          <Text>{user?.fullName}</Text>
           <Text>Chào mừng tới với Fastdo</Text>
         </View>
       </View>
