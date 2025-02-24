@@ -34,15 +34,13 @@ export default function ModulesScreen({ navigation }) {
         setUser(userData);
         setBanner([...list]);
         setModule([...listModule]);
-        console.log('userData', userData);
       } catch (error) {
-        console.error("Error fetching user data:", error);
 
       }
     };
 
     fetchData();
-  }, [userId]); // Thêm userId vào dependency array nếu nó có thể thay đổi
+  }, []); // Thêm userId vào dependency array nếu nó có thể thay đổi
 
   const handleGotoModule = async (module) => {
     navigation.navigate(module);
@@ -60,7 +58,7 @@ export default function ModulesScreen({ navigation }) {
 
   return (
     <View className="flex flex-1 " >
-      <View className="flex h-28 gap-4 items-center bg-yellow-300 align-middle flex-row p-4" >
+      <View className="flex flex-row items-center gap-4 p-4 align-middle bg-yellow-300 h-28" >
         <Image
           source={{ uri: user?.avatar }}
           style={styles.image}
@@ -80,7 +78,7 @@ export default function ModulesScreen({ navigation }) {
           renderItem={({ item }) => (
             <TouchableOpacity  >
               <Image
-                className="w-52 h-40 mx-1 flex"
+                className="flex h-40 mx-1 w-52"
                 source={{ uri: item.source }}
               />
             </TouchableOpacity>
@@ -90,7 +88,7 @@ export default function ModulesScreen({ navigation }) {
 
       <View className="flex flex-col gap-4 p-4">
         <View className="flex flex-col gap-4">
-          <View className="flex flex-row  justify-between " >
+          <View className="flex flex-row justify-between " >
             <Text>Yêu thích</Text>
             <TouchableOpacity
 
@@ -108,7 +106,7 @@ export default function ModulesScreen({ navigation }) {
               data={myModule}
               keyExtractor={(item) => item.id.toString()}
               renderItem={({ item }) => (
-                <TouchableOpacity className="mx-4 text-center justify-center align-middle " onPress={() => handleGotoModule(item.id)} >
+                <TouchableOpacity className="justify-center mx-4 text-center align-middle " onPress={() => handleGotoModule(item.id)} >
                   <View className="flex flex-row justify-center align-middle" >
                     <Image style={styles.iconModules} source={item.source} />
                   </View>
@@ -125,7 +123,7 @@ export default function ModulesScreen({ navigation }) {
             data={module}
             keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => (
-              <TouchableOpacity className="mx-4 text-center justify-center align-middle " onPress={() => handleGotoModule(item.id)} >
+              <TouchableOpacity className="justify-center mx-4 text-center align-middle " onPress={() => handleGotoModule(item.id)} >
                 <View className="flex flex-row justify-center align-middle" >
                   <Image style={styles.iconModules} source={item.source} />
                 </View>

@@ -2,17 +2,15 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { View, Text, ActivityIndicator } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Provider, useDispatch, useSelector } from 'react-redux';
-import { store } from './src/redux/store';
+import { useDispatch, useSelector,Provider } from 'react-redux';
+import { loginSuccess } from './src/redux/authSlice'; // Action creator
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { loginSuccess } from './src/redux/authSlice';
-
+import { store } from './src/redux/store';
 import TodolistRouter from './src/screens/Todolist/_routerTodolist';
 import CheckinRouter from './src/screens/Checkin/_routerCheckin';
 import Login from './src/screens/Login/Login';
 import LayoutHome from './src/screens/Home/_layout';
 import './global.css';
-
 
 const Stack = createNativeStackNavigator();
 
@@ -25,21 +23,23 @@ const AppContent = () => {
   const checkAuth = useCallback(async () => {
     try {
       const accessToken = await AsyncStorage.getItem('authToken');
-      const userId = await AsyncStorage.getItem('userId');
-      console.log(accessToken);
+      const userId= await AsyncStorage.getItem('userId'); 
 
       if (accessToken) {
         dispatch(loginSuccess({
           tokens: { accessToken },
-          user: { userId: userId } // Thay bằng dữ liệu người dùng thực tế
+          user: { id: userId } 
         }));
+      } else {
+        console.log("No access token found");
       }
     } catch (error) {
-      console.error('Lỗi kiểm tra xác thực:', error);
+      console.error('Error checking authentication:', error);
     } finally {
       setIsLoading(false);
     }
   }, [dispatch]);
+
 
   useEffect(() => {
     checkAuth();
@@ -49,27 +49,29 @@ const AppContent = () => {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         <ActivityIndicator size="large" color="#0000ff" />
-        <Text>Đang tải...</Text>
+        <Text>Loading...</Text>
       </View>
     );
   }
 
+  // Render nội dung chính của ứng dụng
   return (
     <Stack.Navigator>
+
       {isLoggedIn ? (
         <>
           <Stack.Screen options={{ headerShown: false }} name="Home" component={LayoutHome} />
           <Stack.Screen options={{ headerShown: true }} name="Checkin" component={CheckinRouter} />
           <Stack.Screen options={{ headerShown: true }} name="Todolist" component={TodolistRouter} />
-          <Stack.Screen options={{ headerShown: false }} name="Login" component={Login} />
         </>
-      ) : (
-        <Stack.Screen options={{ headerShown: false }} name="Login" component={Login} />
-      )}
+      ) : null}
+     
+    	  <Stack.Screen options={{ headerShown: false }} name="Login" component={Login} />
     </Stack.Navigator>
   );
 };
 
+// Component App (bọc NavigationContainer với Redux Provider)
 export default function App() {
   return (
     <Provider store={store}>

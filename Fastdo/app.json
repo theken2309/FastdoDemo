@@ -2,7 +2,7 @@
   "expo": {
     "name": "Fastdo",
     "slug": "Fastdo",
-    "scheme": "Fastdo-scheme",
+    "scheme": "fastdo-scheme",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/image/icon.png",
@@ -15,7 +15,7 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.example.fastdo",
+      "bundleIdentifier": "com.work.fastdo",
       "entitlements": {
         "keychain-access-groups": ["YOUR_TEAM_ID.com.example.fastdo"]
       }
@@ -23,14 +23,23 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/image/adaptive-icon.png",
-        "backgroundColor": "#ffffff",
-        "package": "com.example.fastdo"
-      }
+        "backgroundColor": "#ffffff"
+  
+      },
+      "package": "com.work.fastdo"
     },
     "web": {
       "favicon": "./assets/image/favicon.png",
       "bundler": "metro"
     },
-    "plugins": ["expo-router"]
+    "plugins": ["expo-router"],
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "053236f1-44bc-4af1-9417-303604d22d9a"
+      }
+    }
   }
 }

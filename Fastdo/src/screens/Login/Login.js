@@ -2,31 +2,27 @@ import React from "react";
 import { Text, View, ScrollView, Image, StyleSheet, TextInput, Pressable, TouchableOpacity } from "react-native";
 import { SafeAreaView, SafeAreaProvider, AreaProvider } from "react-native-safe-area-context";
 import "../../../global.css";
-import { PostLogin } from "../../services/AuthenticationService";
+import { Login } from "../../services/AuthenticationService";
 import { useNavigation } from "@react-navigation/native";
-import { useDispatch } from 'react-redux'; // Import useDispatch
-import { loginSuccess } from '../../redux/authSlice'; // Thêm dòng này
-import AsyncStorage from '@react-native-async-storage/async-storage'; // Import AsyncStorage
-export default function Login() {
+import { useDispatch } from 'react-redux'; 
+import { loginSuccess } from '../../redux/authSlice'; 
+
+export default function LoginScreen() {
 
   const dispatch = useDispatch();
   const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
   const navigate = useNavigation();
-  const headers = {
-    "x-api-key": "243PA307D3",
-  };
   const HandleLogin = async () => {
     try {
-      var result = await PostLogin({ email: username, password: password }, headers);
+      var result = await Login({ email: username, password: password } );
       if (result == null) {
         alert("Đăng nhập thất bại");
       } else {
-        console.log(result);
-        dispatch(loginSuccess(result.metadata));
-        await AsyncStorage.setItem('authToken', result.metadata.tokens.accessToken); // Lưu accessToken vào AsyncStorage
-        await AsyncStorage.setItem('userId', result.metadata.user.userId); // Lưu accessToken vào AsyncStorage
-        navigate.navigate("Home")
+				// set headers
+				console.log('result:', result);
+        dispatch(loginSuccess(result));
+      	navigate.navigate("Home")
       }
     } catch (error) {
       console.error(error);
@@ -62,6 +58,7 @@ export default function Login() {
                 style={styles.input}
                 onChangeText={(text) => setUsername(text)}
                 value={username}
+								autoCapitalize="none"
               />
               <Text>Mật khẩu :</Text>
               <TextInput

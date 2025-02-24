@@ -16,17 +16,16 @@ export const authSlice = createSlice({
         loginSuccess: (state, action) => {
             state.accessToken = action.payload.tokens.accessToken;
             state.refreshToken = action.payload.tokens.refreshToken;
-            // Giả sử action.payload.user chứa userId (cần điều chỉnh nếu cấu trúc khác)
-            state.userId = action.payload.user.userId || null;
+            state.userId = action.payload?.user.id || null;
             state.isLoggedIn = true;
-            // state.userData = action.payload.user; // Lưu trữ thông tin người dùng
         },
+				
         logout: () => {
             state.accessToken = null;
             state.refreshToken = null;
             state.userId = null;
             state.isLoggedIn = false;
-            state.userData = null; // Xóa thông tin người dùng khi đăng xuất
+            state.userData = null; 
         },
     },
 });
