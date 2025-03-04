@@ -2,13 +2,19 @@ import React from 'react';
 import { View, Text, Button, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import AsyncStorage from '@react-native-async-storage/async-storage'; 
-import {clearHeadersCache} from '../../../../api/clientAPI'; 
+import { useDispatch } from 'react-redux'; 
+import { logout } from '../../../../redux/authSlice';
 
 const MyProfileScreen = ({ navigation }) => {
-    const logout = async () => {
+
+		const dispatch = useDispatch();
+
+    const logoutAsync = async () => {
         await AsyncStorage.removeItem('authToken');
-			//	 clearHeadersCache();
-        navigation.navigate("Login")
+				await AsyncStorage.removeItem('userId');
+				await AsyncStorage.removeItem('companyId');
+				dispatch(logout());
+				navigation.navigate('Login');
     };
 
     return (
@@ -92,7 +98,7 @@ const MyProfileScreen = ({ navigation }) => {
 
             </View>
 
-            <TouchableOpacity className="items-center p-2 m-2 bg-red-500 rounded-lg " onPress={logout} >
+            <TouchableOpacity className="items-center p-2 m-2 bg-red-500 rounded-lg " onPress={logoutAsync} >
                 <Text className="text-white"  > Đăng xuất </Text>
             </TouchableOpacity>
 

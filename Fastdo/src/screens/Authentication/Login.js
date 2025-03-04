@@ -1,5 +1,5 @@
-import React from "react";
-import { Text, View, ScrollView, Image, StyleSheet, TextInput, Pressable, TouchableOpacity } from "react-native";
+import React, { useState, useEffect } from 'react';
+import { Text, View, ScrollView, Image, StyleSheet, TextInput, TouchableOpacity } from "react-native";
 import { SafeAreaView, SafeAreaProvider, AreaProvider } from "react-native-safe-area-context";
 import "../../../global.css";
 import { Login } from "../../services/AuthenticationService";
@@ -15,20 +15,22 @@ export default function LoginScreen() {
   const navigate = useNavigation();
   const HandleLogin = async () => {
     try {
-      var result = await Login({ email: username, password: password } );
+      var result = await Login({ Email: username, Password: password } );
       if (result == null) {
         alert("Đăng nhập thất bại");
       } else {
-				// set headers
-				console.log('result:', result);
         dispatch(loginSuccess(result));
-      	navigate.navigate("Home")
+				navigate.navigate('SelectCompany');
       }
     } catch (error) {
       console.error(error);
     }
   };
+	useEffect(() => {
+    
+  }, []);
 
+	
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.centeredView}>

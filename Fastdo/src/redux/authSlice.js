@@ -1,12 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { API_KEY } from '../config/constants';
 
 const initialState = {
     accessToken: null,
     refreshToken: null,
     userId: null,
     isLoggedIn: false,
-    userData: null, // Thêm trường để lưu thông tin người dùng
+    userData: null, 
+		companyId : null,
+		userName : "",
 };
 
 export const authSlice = createSlice({
@@ -17,18 +18,25 @@ export const authSlice = createSlice({
             state.accessToken = action.payload.tokens.accessToken;
             state.refreshToken = action.payload.tokens.refreshToken;
             state.userId = action.payload?.user.id || null;
-            state.isLoggedIn = true;
+						state.companyId = undefined;
+						state.isLoggedIn = true;
         },
 				
-        logout: () => {
+        logout: (state) => {
             state.accessToken = null;
             state.refreshToken = null;
             state.userId = null;
             state.isLoggedIn = false;
             state.userData = null; 
+						state.companyId = null;
         },
+
+				setCompany: (state,action) => {
+					state.companyId = action.payload.companyId;
+					state.isLoggedIn = true;
+			},
     },
 });
 
-export const { loginSuccess, logout } = authSlice.actions;
+export const { loginSuccess, logout,setCompany } = authSlice.actions;
 export default authSlice.reducer;

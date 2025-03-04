@@ -7,3 +7,6 @@ export const AUTH_API = {
 	GET_USER_BY_ID: `${ENDPOINT_VERSION2_API}/user/home`,
 };
 
+export const COMPANY_API = {
+	GET_ALL_COMPANY: `${ENDPOINT_VERSION2_API}/company`,
+}

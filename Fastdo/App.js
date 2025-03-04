@@ -1,49 +1,77 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React from 'react';
 import { View, Text, ActivityIndicator } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { useDispatch, useSelector,Provider } from 'react-redux';
-import { loginSuccess } from './src/redux/authSlice'; // Action creator
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Provider } from 'react-redux';
 import { store } from './src/redux/store';
 import TodolistRouter from './src/screens/Todolist/_routerTodolist';
 import CheckinRouter from './src/screens/Checkin/_routerCheckin';
-import Login from './src/screens/Login/Login';
+import SelectComapnyScreen from './src/screens/Authentication/SelectCompany';
+import LoginScreen from './src/screens/Authentication/Login';
 import LayoutHome from './src/screens/Home/_layout';
+import { useAuth } from './src/hooks/useAuth';
 import './global.css';
 
 const Stack = createNativeStackNavigator();
 
-const AppContent = () => {
-  const dispatch = useDispatch();
-  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+// Navigator dành cho người dùng chưa đăng nhập
+const AuthNavigator = () => (
+  <Stack.Navigator>
+    <Stack.Screen 
+      options={{ headerShown: false }} 
+      name="Login" 
+      component={LoginScreen} 
+    />
+		  <Stack.Screen 
+      options={{ headerShown: true ,
+			title :"Chọn công ty",
+			headerTransparent: false,
+			}} 
+      name="SelectCompany" 
+      component={SelectComapnyScreen} 
+    />
+  </Stack.Navigator>
+);
 
-  const [isLoading, setIsLoading] = useState(true);
+// Navigator dành cho người dùng đã đăng nhập
+const AppNavigator = () => (
+  <Stack.Navigator>
+    <Stack.Screen 
+      options={{ headerShown: false }} 
+      name="Home" 
+      component={LayoutHome} 
+    />
+    <Stack.Screen 
+      options={{ headerShown: true }} 
+      name="Checkin" 
+      component={CheckinRouter} 
+    />
+    <Stack.Screen 
+      options={{ headerShown: true }} 
+      name="Todolist" 
+      component={TodolistRouter} 
+    />
 
-  const checkAuth = useCallback(async () => {
-    try {
-      const accessToken = await AsyncStorage.getItem('authToken');
-      const userId= await AsyncStorage.getItem('userId'); 
+		<Stack.Screen 
+					options={{ headerShown: true ,
+					title :"Chọn công ty",
+					headerTransparent: false,
+					}} 
+					name="SelectCompany" 
+					component={SelectComapnyScreen} 
+				/>
+		    <Stack.Screen 
+      options={{ headerShown: false }} 
+      name="Login" 
+      component={LoginScreen} 
+    />
+  </Stack.Navigator>
+);
 
-      if (accessToken) {
-        dispatch(loginSuccess({
-          tokens: { accessToken },
-          user: { id: userId } 
-        }));
-      } else {
-        console.log("No access token found");
-      }
-    } catch (error) {
-      console.error('Error checking authentication:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [dispatch]);
-
-
-  useEffect(() => {
-    checkAuth();
-  }, [checkAuth]);
+// RootNavigator sẽ quyết định render AuthNavigator hay AppNavigator dựa trên trạng thái xác thực
+const RootNavigator = () => {
+	// Lấy trạng thái loading và đăng nhập từ hook useAuth
+  const { isLoading, isLoggedIn, companyId } = useAuth();
 
   if (isLoading) {
     return (
@@ -54,29 +82,14 @@ const AppContent = () => {
     );
   }
 
-  // Render nội dung chính của ứng dụng
-  return (
-    <Stack.Navigator>
-
-      {isLoggedIn ? (
-        <>
-          <Stack.Screen options={{ headerShown: false }} name="Home" component={LayoutHome} />
-          <Stack.Screen options={{ headerShown: true }} name="Checkin" component={CheckinRouter} />
-          <Stack.Screen options={{ headerShown: true }} name="Todolist" component={TodolistRouter} />
-        </>
-      ) : null}
-     
-    	  <Stack.Screen options={{ headerShown: false }} name="Login" component={Login} />
-    </Stack.Navigator>
-  );
+  return (isLoggedIn) ? <AppNavigator store={store} /> : <AuthNavigator store={store} />;
 };
 
-// Component App (bọc NavigationContainer với Redux Provider)
 export default function App() {
   return (
     <Provider store={store}>
       <NavigationContainer>
-        <AppContent />
+        <RootNavigator />
       </NavigationContainer>
     </Provider>
   );

@@ -4,10 +4,7 @@ import { AUTH_API } from "../config/apiEndpoints";
 /// Đăng nhập
 export const PostLoginAsync = async (signInForm) => {
   try {
-		console.log('AUTH_API.LOGIN:', AUTH_API.LOGIN);
-		console.log('signInForm:', signInForm);
     const res = await apiClient.post(AUTH_API.LOGIN, signInForm);
-		console.log('res:', res.data.metadata);
     return res.data.metadata;
   } catch (error) {
     console.error("Lỗi khi đăng nhập:", error);
@@ -32,5 +29,5 @@ export const GetUserByIdAsync = async (id) => {
 		return res?.data?.metadata;
 	} catch (error) {
 		console.error("Lỗi khi lấy thông tin user:", error);
-	}ß
+	}
 }

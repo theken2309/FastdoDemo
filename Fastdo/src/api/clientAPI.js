@@ -12,7 +12,7 @@ const apiClient = axios.create({
 let cachedHeaders = null; // Lưu cache headers để tối ưu hiệu suất
 
 // Hàm cập nhật headers từ AsyncStorage
-const updateHeadersCache = async () => {
+export const updateHeadersCache = async () => {
   try {
     const token = await AsyncStorage.getItem('authToken') || '';
     const userId = await AsyncStorage.getItem('userId') || '';
@@ -25,6 +25,7 @@ const updateHeadersCache = async () => {
       'x-company-id': companyId,
     };
 
+		console.log('cachedHeaders:', cachedHeaders);
   } catch (error) {
     console.error('Erro for headers:', error);
   }
@@ -47,6 +48,27 @@ apiClient.interceptors.request.use(
 export const clearHeadersCache = () => {
 	cachedHeaders = null;
 };
+
+// Hàm set company vào cachedHeaders
+export const setCompanyToHeaders = (companyId) => {
+  if (cachedHeaders) {
+    cachedHeaders['x-company-id'] = companyId;
+  } else {
+    console.error('No cachedHeaders to update');
+  }
+};
+
+// Hàm set x-client-id và authorization vào cachedHeaders
+export const setClientAndAuthHeaders = (token, userId) => {
+  if (cachedHeaders) {
+    cachedHeaders['authorization'] = token;
+    cachedHeaders['x-client-id'] = userId;
+  } else {
+    console.error('No cachedHeaders to update');
+  }
+};
+
+
 
 // Hàm load headers lại (dùng sau khi đăng nhập)
 export const refreshHeaders = async () => {
