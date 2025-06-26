@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "965414040818",
+    "project_id": "fastdo-e5432",
+    "storage_bucket": "fastdo-e5432.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:965414040818:android:4b41504e77cbb0607dcc6b",
+        "android_client_info": {
+          "package_name": "com.fastdopro"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDLeo0Tk_3OfMOJ-0B41GdjAJtqG-jrsrk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
